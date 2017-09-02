@@ -15,7 +15,7 @@ def ExtractData(getImages=True):
     data = {'sets': []}
 
     with open('dominion-data.html', 'r') as f:
-        soup = BeautifulSoup(f.read())
+        soup = BeautifulSoup(f.read(), 'lxml')
 
     headings = soup.find_all('h2')
 
@@ -32,15 +32,16 @@ def ExtractData(getImages=True):
             card = {}
 
             cardNameCell = tr.find(class_='card-name')
-            card['card-url'] = urlparse.urljoin(base_url, cardNameCell.find('a'))
+            cardLink = cardNameCell.find('a')
+            card['card-url'] = urlparse.urljoin(base_url, cardLink['href'])
             card['name'] = cardNameCell.string
             card['number'] = tr.find(class_='card-number').string
             card['cost'] = tr.find(class_='card-cost').string
             card['card-type'] = tr.find(class_='card-type').string
-            card['rules'] = tr.find(class='card-rules').string
+            card['rules'] = tr.find(class_='card-rules').string
             # Guessing at image url
             imagePath = 'scans/{0}/{1}.jpg'.format(
-                    lower(setName), lower(card['name']))
+                    setName.lower(), card['name'].lower())
             card['image-url'] = urlparse.urljoin(base_url, imagePath)
 
             setData['cards'].append(card)
@@ -55,7 +56,7 @@ def ExtractData(getImages=True):
 
 def main():
     data = ExtractData(getImages=False)
-    with open('data.json', 'r') as f:
+    with open('data.json', 'w') as f:
         json.dump(data, f, indent=4, separators=(',', ': '))
 
 
