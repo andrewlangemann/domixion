@@ -52,14 +52,22 @@ class DomixionRequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
                 # Get the resource out of the Resources directory and write its contents to the response.
                 scriptDir = os.path.dirname(os.path.realpath(__file__))
                 resourceFileName = scriptDir + self.path.replace('/', '\\')
+                if self.path.endswith('.css'):
                 with open(resourceFileName, 'r') as resourceFile:
-                    contents = resourceFile.read()
-                    if self.path.endswith('.css'):
+                    self.send_response(200)
+                    self.send_header('Content-Type', 'text/css')
+                    self.end_headers()
+
+                    self.wfile.write(resourceFile.read())
+                    self.wfile.close()
+
+                elif self.path.endswith('.jpg'):
+                    with open(resourceFileName, 'rb') as resourceFile:
                         self.send_response(200)
-                        self.send_header('Content-Type', 'text/css')
+                        self.send_header('Content-Type', 'image/jpeg')
                         self.end_headers()
 
-                        self.wfile.write(contents)
+                        self.wfile.write(resourceFile.read())
                         self.wfile.close()
 
         except:
