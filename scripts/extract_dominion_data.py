@@ -17,9 +17,10 @@ def GetCardImages(setData):
         cardImageName = '{}.jpg'.format(card['name'].lower().replace(' ', ''))
         path = os.path.join('images', folderName, cardImageName)
         directory = os.path.dirname(path)
-        os.makedirs(directory)
-        with open(os.path.join(folderName, cardImageName), 'wb') as f:
-            f.write(r.data())
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        with open(path, 'wb') as f:
+            f.write(r.content)
 
 
 def ExtractData(getImages=True):
