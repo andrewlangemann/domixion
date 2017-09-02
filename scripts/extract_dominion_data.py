@@ -7,11 +7,14 @@ from bs4 import BeautifulSoup
 base_url = r'http://dominion.diehrstraits.com/?set=All&f=list'
 
 
+def GetCardImages(setData):
+    pass
 
-def ExtractData():
+
+def ExtractData(getImages=True):
     data = {'sets': []}
 
-    with open('dominion-data.html') as f:
+    with open('dominion-data.html', 'r') as f:
         soup = BeautifulSoup(f.read())
 
     headings = soup.find_all('h2')
@@ -40,6 +43,21 @@ def ExtractData():
                     lower(setName), lower(card['name']))
             card['image-url'] = urlparse.urljoin(base_url, imagePath)
 
+            setData['cards'].append(card)
+
+        if getImages:
+            GetCardImages(setData)
+
+        data['sets'].append(setData)
 
     return data
 
+
+def main():
+    data = ExtractData(getImages=False)
+    with open('data.json', 'r') as f:
+        json.dump(data, f, indent=4, separators=(',', ': '))
+
+
+if __name__ == '__main__':
+    main()
