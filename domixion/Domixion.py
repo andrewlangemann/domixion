@@ -1,4 +1,6 @@
+import DomixionServer
 import random
+import SocketServer
 
 
 def getRandomResults():
@@ -308,4 +310,5 @@ def getRandomResults():
     return finalResult + list(sorted(eventList + landmarkList))
 
 
-print ('\n'.join(getRandomResults()))
+#print ('\n'.join(getRandomResults()))
+DomixionServer.RunServer()
